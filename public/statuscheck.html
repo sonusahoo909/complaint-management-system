@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>user_2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="statuscheckcss.css">
+</head>
+<body>
+    
+    
+    <div class="sidebar" id="ab">
+
+        <div class="logo"></div>
+        <u1 class="menu">
+          <img src="logo.png" style="position: relative; width: 100px; height: 100px; right: 1.5rem; bottom: 3rem;" alt="">
+            <li  style="position: relative; top: 2rem;">
+                <a href="#">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span id="home" >Home</span>
+                </a>
+            </li>
+            
+            <li class="active"  style="position: relative; top: 2rem;">
+                <a href="#">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Status Check</span>
+                </a>
+            </li>
+           
+           
+        </u1>
+
+    </div>
+
+    <div class="main--content">
+
+      <h3 style="font-size: 35px; background: rgb(255, 0, 72); width: 50vw; position: relative; left: 19rem; padding-left: 4rem; padding-top: 7px; height: 4rem; border-radius: 15px; ">  IPAS COMPLAINT MANAGEMENT SYSTEM</h3>
+
+
+
+        <div class="header--wrapper" style="position: relative; top: 1rem; height: 70vh; background: white;">
+
+
+           
+
+
+
+            <div class="header0">
+              <h2 style="position: relative; left: 13rem; bottom: 4.6rem;">Complaint Id</h2>
+              <div class="complaint-form">
+                <form  action="#" id="complaintBox">
+          
+                  <input style="position: relative; bottom: 6rem; left: 14rem; " type="text" id="complaint_id" name="complaint_id" placeholder="Enter Complaint ID" required>
+                  <input  style="position: relative; left: 40rem; bottom: 9rem;" type="submit" value="Check Status">
+                </form>
+              </div>
+          
+            </div>
+
+
+            </div>
+          
+            <div class="dealer" style="position: relative; bottom: 18rem; left: 1rem;">
+              <div class="header1">
+                <h1 style="position: relative; bottom: 1rem;">Your Complaint</h1>
+              </div>
+          
+              <table>
+                <thead>
+                  <tr style=" position: relative; right: 10px;">
+                    
+                    <th>Com.ID</th>
+                    <th>Division</th>
+                    <th>Section</th>
+                    <th>Complaint Desc</th>
+                    <th>Status</th>
+                    <th>Admin Remarks</th>
+                    <th>Dealer Remarks</th>
+                  </tr>
+                  <tbody style="position: relative; right: 10px;" id="complaint_table">
+
+                  </tbody>
+                </thead>
+               
+              </table>
+            </div>
+
+
+    </div>
+
+
+
+    
+
+
+    <script>
+
+const allDropdown = document.querySelectorAll('.sidebar .side-dropdown');
+
+allDropdown.forEach(item=> {
+    const a = item.parentElement.querySelector('a:first-child');
+    a.addEventListener('click',function(e){
+        e.preventDefault();
+
+        
+        this.classList.toggle('active');
+        item.classList.toggle('show');
+
+    });
+});
+
+document
+  .getElementById("complaintBox")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault();
+ 
+    var complaint = document.getElementById("complaint_id").value;
+    var complaint_str =  "checkstatus/"+complaint;
+    console.log(complaint_str);
+    fetch(complaint_str
+    )
+      .then(response => response.json())
+      .then(data => {
+        buildTable(data);
+        // Process the received data
+     //   document.getElementById('complaint').innerText = JSON.stringify(data[0].complaint_id);
+      })
+      .catch(error => console.log(error));
+  });
+
+        function buildTable(data){
+          var table = document.getElementById('complaint_table');
+          var id = table.value;
+for (var i = 0; i < data.length; i++) {
+  var row = "<tr>" +
+    "<td>" + data[i].complaint_id + "</td>" +
+    "<td>" + data[i].complaint_division + "</td>" +
+    "<td>" + data[i].complaint_section + "</td>" +
+    "<td>" + data[i].complaint_desc.substring(0, 50) + "</td>" +
+    "<td>" + data[i].complaint_status + "</td>" +
+    "<td>" + data[i].complaint_admin_remark + "</td>" +
+    "<td>" + data[i].complaint_dealer_remark + "</td>" +
+    "</tr>";
+  table.innerHTML += row;
+}
+        }
+        document
+        .getElementById("home")
+        .addEventListener("click", async (e) => {
+          e.preventDefault();
+          
+          const res = await fetch("/redirectToHome", {
+            method: "POST",
+            body: "formData",
+          });
+
+          if (res.redirected) {
+                 window.location = res.url;
+               } else {
+                 const err = res.json();
+                 alert(err.description);
+               }
+        });
+
+    </script> 
+
+</body>
+</html>
